@@ -1,9 +1,17 @@
 from sanic import Sanic
 from sanic.response import json
+from sanic.worker.manager import WorkerManager
 
 from logzero import logger
 
+from talker import talk
+
 app = Sanic("SimpleService")
+
+talker = talk()
+
+WorkerManager.THRESHOLD = 100  # Value is in 0.1s
+
 
 # Initialize a simple message
 message = {"content": "Hello, World!"}
@@ -22,12 +30,14 @@ async def update_message(request):
     data = request.json
     logger.debug(request.json)
     logger.debug(type(request.json))
-    if "content" in data:
+    if "text" in data:
         logger.debug(request.json)
         logger.debug(type(request.json))
-        message["content"] = data["content"]
-        return json({"status": "Message updated"}, status=200)
-    return json({"error": "Invalid request"}, status=400)
+
+        response = talker.parse(data["text"])
+
+        return json({"response": response}, status=200)
+    return json({"error": "Invalid request, key 'text' missing."}, status=400)
 
 
 if __name__ == "__main__":
