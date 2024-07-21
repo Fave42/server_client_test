@@ -9,7 +9,7 @@ class talk:
             r"([hH][aAäÄ][lL]{2}[oO]|[hH][iI]|[sS][eE][rR][vV][uU][sS]|[mM][oO][iI][nN]|[gG][rRüÜuUß][eE]{0,2}[sS]?)"
         )
 
-    def parse(self, input_text: str) -> str:
+    async def parse(self, input_text: str) -> str:
         input_text = input_text.lower()
         if re.match(self.match_hallo, input_text):
             logger.debug("We have a match!")
