@@ -43,11 +43,23 @@ async def parse_message(request):
 @app.post("/login")
 async def login_new_user(request):
     data = request.json
-    if "initial_data" in data:
-        # response = await talker.parse(data["text"])
+    if "initial_data" not in data:
+        return json(
+            {"error": "Invalid request, key 'initial_data' missing."}, status=400
+        )
+    return json({"conversation_id": str(uuid.uuid4())}, status=200)
 
-        return json({"conversation_id": str(uuid.uuid4())}, status=200)
-    return json({"error": "Invalid request, key 'initial_data' missing."}, status=400)
+
+@app.post("/logout")
+async def logout_user(request):
+    data = request.json
+    if "conversation_id" not in data:
+        return json(
+            {"error": "Invalid request, key 'conversation_id' missing."}, status=400
+        )
+    return json(
+        {"success": f"User {data['conversation_id']} was logged out!"}, status=200
+    )
 
 
 if __name__ == "__main__":
