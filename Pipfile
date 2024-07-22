@@ -9,6 +9,7 @@ sanic = "*"
 
 [dev-packages]
 locust = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.10"
