@@ -15,3 +15,4 @@ adminadmin
 ## ToDo
 
 - [ ] save uudi to never have a duplicate
+- [ ] maybe use pocketbase-async?

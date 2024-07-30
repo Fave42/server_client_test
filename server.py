@@ -8,7 +8,7 @@ from logzero import logger
 
 from talker import talk
 
-from backend_connector import save_data
+from backend_connector import save_data, is_conv_id_unique
 
 app = Sanic("SimpleService")
 
@@ -53,7 +53,12 @@ async def login_new_user(request):
         return json(
             {"error": "Invalid request, key 'initial_data' missing."}, status=400
         )
-    conv_id = str(uuid.uuid4())
+
+    while True:
+        conv_id = str(uuid.uuid4())
+        if await is_conv_id_unique(conv_id):
+            break
+
     await save_data("user", "login", conv_id)
     return json({"conversation_id": conv_id}, status=200)
 
