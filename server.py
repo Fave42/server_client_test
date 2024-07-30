@@ -8,6 +8,8 @@ from logzero import logger
 
 from talker import talk
 
+from backend_connector import save_data
+
 app = Sanic("SimpleService")
 
 talker = talk()
@@ -37,6 +39,10 @@ async def parse_message(request):
             "response": talker_response,
             "conversation_id": data["conversation_id"],
         }
+        await save_data("user", data["text"], data["conversation_id"])
+
+        await save_data("bot", talker_response, data["conversation_id"])
+
         return json(response_data, status=200)
 
 
@@ -47,7 +53,9 @@ async def login_new_user(request):
         return json(
             {"error": "Invalid request, key 'initial_data' missing."}, status=400
         )
-    return json({"conversation_id": str(uuid.uuid4())}, status=200)
+    conv_id = str(uuid.uuid4())
+    await save_data("user", "login", conv_id)
+    return json({"conversation_id": conv_id}, status=200)
 
 
 @app.post("/logout")
